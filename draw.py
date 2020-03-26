@@ -3,34 +3,44 @@ from matrix import *
 from gmath import *
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
-    pass
-
+    add_point(polygons, x0, y0, z0)
+    add_point(polygons, x1, y1, z1)
+    add_point(polygons, x2, y2, z2)
+    
 def draw_polygons( polygons, screen, color ):
-    pass
-
-
+    i = 0 
+    while i < len(polygons):
+        draw_line(polygons[i][0], polygons[i][1], polygons[i+1][0], polygons[i+1][1], screen, color)
+        draw_line(polygons[i+2][0], polygons[i+2][1], polygons[i+1][0], polygons[i+1][1], screen, color)
+        draw_line(polygons[i][0], polygons[i][1], polygons[i+2][0], polygons[i+2][1], screen, color)
+        i += 3
+        
 def add_box( polygons, x, y, z, width, height, depth ):
     x1 = x + width
     y1 = y - height
     z1 = z - depth
 
     #front
-    add_edge(polygons, x, y, z, x1, y, z)
-    add_edge(polygons, x, y1, z, x1, y1, z)
-    add_edge(polygons, x1, y, z, x1, y1, z)
-    add_edge(polygons, x, y, z, x, y1, z)
+    add_polygon(polygons, x, y, z, x, y1, z, x1, y, z)
+    add_polygon(polygons, x, y1, z, x1, y1, z, x1, y, z)
 
     #back
-    add_edge(polygons, x, y, z1, x1, y, z1)
-    add_edge(polygons, x, y1, z1, x1, y1, z1)
-    add_edge(polygons, x1, y, z1, x1, y1, z1)
-    add_edge(polygons, x, y, z1, x, y1, z1)
+    add_polygon(polygons, x1, y, z1, x1, y1, z1, x, y, z1)
+    add_polygon(polygons, x1, y1, z1, x, y1, z1, x, y, z1)
 
     #sides
-    add_edge(polygons, x, y, z, x, y, z1)
-    add_edge(polygons, x1, y, z, x1, y, z1)
-    add_edge(polygons, x, y1, z, x, y1, z1)
-    add_edge(polygons, x1, y1, z, x1, y1, z1)
+    add_polygon(polygons, x1, y, z, x1, y1, z, x1, y, z1)
+    add_polygon(polygons, x1, y1, z, x1, y1, z1, x1, y, z1)
+    add_polygon(polygons, x, y1, z1, x, y, z, x, y, z1)
+    add_polygon(polygons, x, y1, z1, x, y1, z, x, y, z)
+
+    #top
+    add_polygon(polygons, x, y, z1, x, y, z, x1, y, z1)
+    add_polygon(polygons, x, y, z, x1, y, z, x1, y, z1)
+
+    #bottom
+    add_polygon(polygons, x, y1, z, x, y1, z1, x1, y1, z)
+    add_polygon(polygons, x, y1, z1, x1, y1, z1, x1, y1, z)
 
 def add_sphere(polygons, cx, cy, cz, r, steps ):
     points = generate_sphere(cx, cy, cz, r, steps)
@@ -171,7 +181,6 @@ def add_point( matrix, x, y, z=0 ):
 
 
 def draw_line( x0, y0, x1, y1, screen, color ):
-
     #swap points if going right -> left
     if x0 > x1:
         xt = x0
@@ -180,12 +189,11 @@ def draw_line( x0, y0, x1, y1, screen, color ):
         y0 = y1
         x1 = xt
         y1 = yt
-
+    x0, y0, x1, y1 = int(x0), int(y0), int(x1), int(y1)
     x = x0
     y = y0
     A = 2 * (y1 - y0)
-    B = -2 * (x1 - x0)
-
+    B = -2 * (x1 - x0)              
     #octants 1 and 8
     if ( abs(x1-x0) >= abs(y1 - y0) ):
 
