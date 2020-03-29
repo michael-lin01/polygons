@@ -1,0 +1,38 @@
+ident
+rotate
+x 90
+torus
+125 0 0 25 100
+apply
+torus
+255 0 0 25 100
+apply
+torus
+380 0 0 25 100
+apply
+ident
+rotate
+z 45
+apply
+ident
+rotate
+y 45
+apply
+ident
+move
+100 0 0
+apply
+ident
+sphere
+50 400 0 80
+box
+300 100 0 100 50 75
+rotate
+x 20
+apply
+ident
+rotate
+y 15
+apply
+ident
+display
